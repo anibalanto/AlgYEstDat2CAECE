@@ -13,29 +13,29 @@ struct list_node_t {
 
 
 list_node_t * & lista_buscar_menor( list_node_t * & list, list_node_t * & menor ) {
-    if( list != nullptr) {
-        if ( menor != nullptr ) {
-            if( menor->value < list->value) {
-                return lista_buscar_menor( list->next, menor);
-            }
+    if( list != nullptr && menor != nullptr ) {
+        if( menor->value < list->value) {
+            return lista_buscar_menor( list->next, menor);
         }
+        // menor->value >= list->value
         return lista_buscar_menor( list->next, list);
     }
     return menor;
 }
 
 void lista_ordenar(list_node_t * & list) {
-    list_node_t * & menor = lista_buscar_menor(list, list);
-    if( menor   != nullptr &&
+    list_node_t * & ref_menor = lista_buscar_menor(list, list);
+    if( ref_menor   != nullptr &&
         list    != nullptr ) {
-        if( list != menor ) {
-            list_node_t * aux = (* menor).next; //[A]
-            //list_node_t * aux2 = list;
-            (* menor).next = list;
-            list = menor;
-            //aux2->next = aux1;
-            menor = aux ;   //list -> (10 [dir])-> (-3 [dir])->(5 [dir])...
-                            //        (10 [DIR])-> (5 [dir])
+        if( list != ref_menor ) {
+            list_node_t * menor_next_aux = (* ref_menor).next; //[1] //null
+            //list_node_t * first_list_aux = list; //[1.2]
+            (* ref_menor).next = list; //[2]
+            list = ref_menor; //[3]
+            //first_list_aux->next = menor_next_aux; //[4.1]
+            ref_menor = menor_next_aux ;   //[4.0]
+            //list -> (10 [dir&])-> (-3 [dir])->(5 [dir])...
+            //        (10 [DIR&])-> (5 [dir])
         }
         lista_ordenar( list->next );
     }
